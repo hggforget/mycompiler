@@ -38,6 +38,8 @@ class Productions:
         self.non_terminals=list()
         self.terminals=list()
         self.productions=list()
+        self.Nope=Terminal('ε')
+        self.terminals.append(self.Nope)
         Raw_Productions=list()
         non_terminals=set()
         terminals=set()
@@ -46,7 +48,10 @@ class Productions:
         for i in Raw_Productions:
             non_terminals.add(i.non_terminal)
         for i in non_terminals:
-            self.non_terminals.append(Non_Terminal(i))
+            tmp=Non_Terminal(i)
+            if(i==Raw_Productions[0].non_terminal):
+                self.S=tmp
+            self.non_terminals.append(tmp)
         for p in Raw_Productions:
             leftend=None
             for i in self.non_terminals:
@@ -74,7 +79,7 @@ class Productions:
                         break
                 flag1=0
                 for i in self.terminals:
-                    if(i.content==tmp_terminal):
+                    if(tmp_terminal=="" or i.content==tmp_terminal):
                         re.terminal=i
                         flag1=1
                         break

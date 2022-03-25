@@ -10,30 +10,36 @@ class NFANode:
 class NFA:
     def __init__(self,Productions):
         self.Vertexs=list()
-        self.HeadNode=NFANode(0,"HeadNode")
-        self.TailNode=NFANode(-1,"TailNode")
+        self.TailNode=NFANode(0,"TailNode")
         self.pointers=list()
+        self.HeadNode=NFANode(Productions.S.Num,Productions.S.content)
+        self.Vertexs.append(self.HeadNode)
         for i in Productions.non_terminals:
+            if(i.Num==self.HeadNode.StatusNum):
+                continue
             self.Vertexs.append(NFANode(i.Num,i.content))
         for i in Productions.terminals:
             self.pointers.append(i)
-        nope= Functions_Scanner.Terminal('ε')
-        self.pointers.append(nope)
-        for i in self.Vertexs:
-            self.HeadNode.PathCh.append(nope)
-            self.HeadNode.NextNodes.append(i)
-        self.Vertexs.append(self.HeadNode)
+        self.Nope=Productions.Nope
+        self.pointers.append(self.Nope)
+        self.Vertexs.append(self.TailNode)
         for p in Productions.productions:
-            node=self.Vertexs[p.non_terminal.Num-1]
+            node=None
+            for i in self.Vertexs:
+                if i.StatusNum==p.non_terminal.Num:
+                    node=i
+                    break
             node.PathCh.append(p.rightend.terminal)
             if(p.rightend.non_terminal!=None):
-                node.NextNodes.append(self.Vertexs[p.rightend.non_terminal.Num-1])
+                for i in self.Vertexs:
+                    if i.StatusNum == p.rightend.non_terminal.Num:
+                        node.NextNodes.append(i)
+                        break
             else:
                 node.NextNodes.append(self.TailNode)
         for i in self.Vertexs:
             for r in range(len(i.PathCh)):
                 print(i.content+"->"+i.NextNodes[r].content+"("+i.PathCh[r].content+")")
-
 class Grammar2NFA:
     def ToNFA(self,grammarlines):
         productions= Functions_Scanner.Productions(grammarlines)
@@ -49,3 +55,4 @@ class Grammar2NFA:
             print(p.non_terminal.content + "->" + p.rightend.terminal.content + str)
         '''
         nfa=NFA(productions)
+        return nfa
