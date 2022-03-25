@@ -2,8 +2,8 @@
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
+import NFA
+import Functions_Scanner
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
@@ -12,7 +12,11 @@ def print_hi(name):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
-f=open("grammar.txt")
+f=open("grammar.txt",encoding='utf-8')
 grammarlines=f.readlines()
-print(grammarlines)
+
+f.close()
+
+nfa= NFA.Grammar2NFA()
+nfa.ToNFA(grammarlines)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
