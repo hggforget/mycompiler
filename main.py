@@ -5,6 +5,7 @@
 import NFA
 import Functions_Scanner
 from DFA import NFA2DFA
+from Parser import Parser
 from Scanner import Scanner
 
 
@@ -17,5 +18,6 @@ def print_hi(name):
 if __name__ == '__main__':
     print_hi('PyCharm')
 
-    Scanner("grammar.txt","biaoshifu.txt","string.txt")
+    tokens=Scanner("lexical.txt","biaoshifu.txt","string.txt")
+    parser=Parser(tokens,"grammar.txt")
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

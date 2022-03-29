@@ -6,7 +6,7 @@ from NFA import Grammar2NFA
 class Scanner:
     def __init__(self,changshu,biaoshifu,string):
         f=open(changshu,encoding='utf-8')
-        grammarlines=f.readlines()
+        changshulines=f.readlines()
         f.close()
         f=open(biaoshifu,encoding='utf-8')
         biaoshifulines=f.readlines()
@@ -15,7 +15,7 @@ class Scanner:
         strings = f.readlines()
         f.close()
         g2n= Grammar2NFA()
-        nfa_changshu=g2n.ToNFA(grammarlines)
+        nfa_changshu=g2n.ToNFA(changshulines)
         dfa_changshu=NFA2DFA(nfa_changshu)
         nfa_bsf = g2n.ToNFA(biaoshifulines)
         dfa_bsf = NFA2DFA(nfa_bsf)
@@ -70,6 +70,7 @@ class Scanner:
                     else:
                         tokens.append(Functions_Scanner.Token(str[index], "未定义"))
                         index+=1
+        self.Tokens=tokens
         for i in tokens:
             print("("+i.Num.__str__()+" , "+i.Content+" , "+i.Type+")")
 
