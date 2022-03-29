@@ -5,6 +5,7 @@
 import NFA
 import Functions_Scanner
 from DFA import NFA2DFA
+from Scanner import Scanner
 
 
 def print_hi(name):
@@ -15,12 +16,6 @@ def print_hi(name):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
-f=open("grammar.txt",encoding='utf-8')
-grammarlines=f.readlines()
 
-f.close()
-
-g2n= NFA.Grammar2NFA()
-nfa=g2n.ToNFA(grammarlines)
-dfa=NFA2DFA(nfa)
+    Scanner("grammar.txt","biaoshifu.txt","string.txt")
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

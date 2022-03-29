@@ -1,0 +1,6 @@
+S->l
+S->lA
+A->l
+A->d
+A->lA
+A->dA

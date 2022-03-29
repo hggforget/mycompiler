@@ -1,3 +1,42 @@
+keywords={
+"bool",
+"break",
+"case",
+"catch",
+"char",
+"class",
+"const",
+"continue",
+"default",
+"delete",
+"do",
+"double",
+"else",
+"false",
+"float",
+"for",
+"if",
+"int",
+"long",
+"main",
+"namespace",
+"new",
+"private",
+"protected",
+"public",
+"return",
+"short",
+"sizeof",
+"static",
+"struct",
+"switch",
+"this",
+"throw",
+"true",
+"try",
+"void",
+"while",
+}
 def isLetter(ch):
     if(ch>='a' and ch<='z') or (ch>='A' and ch<='Z'):
         return True
@@ -5,6 +44,27 @@ def isLetter(ch):
 def isDigit(ch):
     if(ch>='0' and ch<='9'):
         return True
+    return False
+def isQualifier(ch):
+    if ch==',' or ch==';' or ch=='{' or ch=='}':
+        return True
+    return False
+def isCal(str,index):
+    if str[index]=='+' or str[index]=='-' or str[index]=='*' or str[index]=='/'or \
+        str[index]=='%' or str[index]=='=' or str[index]=='(' or str[index]==')':
+        return index
+    elif str[index]=='>' or str[index]=='<':
+        if index+1>=len(str):
+             return index
+        elif str[index+1]=='=':
+             return index+1
+        else:
+             return index
+    return -1
+def isKeyWord(str):
+    for i in keywords:
+        if i==str:
+            return True
     return False
 class Non_Terminal:
     Non_Terminal_Num=0
@@ -35,6 +95,8 @@ class Production:
         self.rightend=re
 class Productions:
     def __init__(self,grammarlines):
+        Non_Terminal.Non_Terminal_Num=0
+        Terminal.Terminal_Num=0
         self.non_terminals=list()
         self.terminals=list()
         self.productions=list()
@@ -87,6 +149,14 @@ class Productions:
                     re.terminal=Terminal(tmp_terminal)
                     self.terminals.append(re.terminal)
                 self.productions.append(Production(leftend,re))
+class Token:
+    Token_Num=0
+    def __init__(self,Content,Type):
+        Token.Token_Num+=1
+        self.Num=Token.Token_Num
+        self.Content=Content
+        self.Type=Type
+
 
 
 
