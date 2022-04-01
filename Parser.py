@@ -7,9 +7,10 @@ class Parser:
         productions=Productions(grammarlines)
         First_Sets=First(productions)
         Follow_Sets=Follow(productions,First_Sets)
-        Projects=list()
+        I0=set()
+        I0.add(Project([productions.S],{productions.End}))
+        GenerateProjects(I0,productions,First_Sets)
 
-        I0=Project_Clusters()
 
 
 

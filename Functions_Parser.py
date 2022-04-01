@@ -1,4 +1,5 @@
 from Functions import Non_Terminal, Raw_Production,Terminal
+from queue import LifoQueue
 
 class Production:
     def __init__(self,leftend,rightend):
@@ -54,7 +55,6 @@ class Productions:
                         self.terminals.append(tmp)
                         rightend.append(tmp)
                 self.productions.append(Production(leftend,rightend))
-
 def First(productions):
     First_Sets=dict()
     for p in productions.non_terminals:
@@ -129,19 +129,74 @@ def Follow(productions,First_Sets):
 
 class Project:
     def __init__(self,content,lookahead):
+        self.isAcc = False
+        if len(content)==0:
+            self.isAcc=True
         self.content=content
         self.Lookahead=lookahead
 
-def GenerateProjects(Initial_Projects,Productions):
-    I=Initial_Projects.copy()
-    for project in I:
-        if project[0].Type==1:
+def isSame(P1,I):
+    for i in I:
+        if len(i.content)!=len(P1):
             continue
-        for production in Productions.productions:
-            if production.non_terminal==project[0]:
-                new_P=Project(production.rightend,First())
-
-
+        flag=0
+        for j in range(len(i.content)):
+            if P1[j]!=i.content[j]:
+                flag=1
+                break
+        if flag==0:
+            return True
+    return False
+def GetLookahead(beta,First_Sets,Nope,PreLookahead):
+    ret=set()
+    flag=0
+    for i in range(1,len(beta)):
+        if beta[i].Type==1:
+            ret.add(beta[i])
+            flag=1
+            break
+        else:
+            ret=ret|(First_Sets[beta[i]]-{Nope})
+            if First_Sets[beta[i]]&{Nope}:
+                flag=1
+                break
+    if flag==0:
+        ret=ret|PreLookahead
+    return ret
+def Closure(I0,Productions,First_Sets):
+    I=I0.copy()
+    ret=I.copy()
+    pros=list()
+    for p in Productions.productions:
+        tmp=list()
+        for i in range(len(p.rightend)):
+            if p.rightend[i]!=Productions.Nope:
+                tmp.append(p.rightend[i])
+        pros.append(Production(p.non_terminal,tmp))
+    growth=1
+    while(growth==1):
+        growth=0
+        for i in I:
+            if len(i.content)==0 or i.content[0].Type==1:
+                continue
+            Lookahead=GetLookahead(i.content,First_Sets,Productions.Nope,i.Lookahead)
+            for p in pros:
+                if p.non_terminal==i.content[0]:
+                    if not isSame(p.rightend,I):
+                        ret.add(Project(p.rightend,Lookahead))
+                        #print(p.non_terminal.content)
+        if ret-I:
+            growth=1
+            I=ret.copy()
+    return ret
+def Go(I,X):
+    Projects=set()
+    for i in I:
+        if len(i.content) == 0:
+            continue
+        if i.content[0]==X:
+            Projects.add(Project(i.content[1:len(i.content)],i.Lookahead))
+    return Projects
 class Project_Clusters:
     Clusters_Num=0
     def __init__(self,Projects):
@@ -150,6 +205,37 @@ class Project_Clusters:
         self.Projects=Projects
         self.NextClusters=dict()
 
+
+def GenerateProjects(Initial_Projects,Productions,First_Sets):
+    Clusters=list()
+    growth=1
+    stack=LifoQueue()
+    tmp=Closure(Initial_Projects,Productions,First_Sets)
+    stack.put(tmp)
+    Clusters.append(tmp)
+    while not stack.empty():
+        I_tmp=stack.get()
+        vis=set()
+        for i in I_tmp:
+            if len(i.content)==0:
+                continue
+            if not vis&{i.content[0]}:
+                print(i.content[0].content+"asds")
+                for k in I_tmp:
+                    for j in k.content:
+                        print(j.content)
+                    print("---")
+                print("--------------")
+                vis.add(i.content[0])
+                tmp=Closure(Go(I_tmp,i.content[0]),Productions,First_Sets)
+                for k in tmp:
+                    for j in k.content:
+                        print(j.content)
+                    print("---")
+                print("--------------")
+                stack.put(tmp)
+                Clusters.append(tmp)
+    return Clusters
 
 
 
