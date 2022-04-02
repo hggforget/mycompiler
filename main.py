@@ -19,5 +19,5 @@ if __name__ == '__main__':
     print_hi('PyCharm')
 
     tokens=Scanner("lexical.txt","biaoshifu.txt","string.txt")
-    parser=Parser(tokens,"grammar.txt")
+    parser=Parser(tokens.Tokens,"grammar.txt","in.txt")
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
